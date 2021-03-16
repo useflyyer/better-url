@@ -2,15 +2,11 @@
   "name": "@flayyer/better-url",
   "version": "0.2.1",
   "author": "Patricio López Juri",
-  "source": "src/index.ts",
   "main": "dist/index.js",
-  "exports": "./dist/index.modern.js",
-  "module": "dist/index.module.js",
-  "unpkg": "dist/index.umd.js",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
   "scripts": {
-    "build": "microbundle",
-    "dev": "microbundle watch",
+    "build": "tsc",
     "test": "jest",
     "lint": "eslint '*/**/*.{js,ts,tsx}'"
   },
