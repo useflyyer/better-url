@@ -1,6 +1,6 @@
 {
   "name": "@flayyer/better-url",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Patricio López Juri",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
