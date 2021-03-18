@@ -6,12 +6,13 @@ export class BetterURL implements URL {
       this.url = new URL(input);
     } else {
       const url = new BetterURL(String(base));
-      this.url = new URL(BetterURL.resolve(url.format({ protocol: true, hostname: true, pathname: true }), input));
-      url.searchParams.forEach((value, key) => {
+      const resolved = BetterURL.resolve(url.format({ protocol: true, hostname: true, pathname: true }), input);
+      this.url = new URL(resolved);
+      for (const [key, value] of url.searchParams) {
         if (!this.url.searchParams.has(key)) {
           this.url.searchParams.set(key, value);
         }
-      });
+      }
     }
   }
 
@@ -76,7 +77,7 @@ export class BetterURL implements URL {
     if (!opts) return this.href;
     let str = "";
     // TODO: add more
-    if (opts.protocol) str += this.protocol;
+    if (opts.protocol) str += this.protocol + "//";
     if (opts.hostname) str += this.hostname;
     if (opts.pathname) str += this.pathname;
     if (opts.search) str += this.search ?? "";
