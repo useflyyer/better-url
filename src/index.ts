@@ -1,16 +1,118 @@
-export class BetterURL implements URL {
+export interface URLDocumented extends URL {
+  /**
+   * A USVString containing a '#' followed by the fragment identifier of the URL.
+   */
+  hash: string;
+
+  /**
+   * A USVString containing the domain (that is the hostname) followed by (if a port was specified) a ':' and the port of the URL.
+   */
+  host: string;
+
+  /**
+   * A USVString containing the domain of the URL.
+   */
+  hostname: string;
+
+  /**
+   * A stringifier that returns a USVString containing the whole URL.
+   */
+  href: string;
+
+  /**
+   * Returns a USVString containing the origin of the URL, that is its scheme, its domain and its port.
+   * (Read only)
+   */
+  readonly origin: string;
+
+  /**
+   * A USVString containing the password specified before the domain name.
+
+   */
+  password: string;
+
+  /**
+   * Is a USVString containing an initial '/' followed by the path of the URL, not including the query string or fragment.
+   */
+  pathname: string;
+
+  /**
+   * A USVString containing the port number of the URL.
+   */
+  port: string;
+
+  /**
+   * A USVString containing the protocol scheme of the URL, including the final ':'.
+   */
+  protocol: string;
+
+  /**
+   * A USVString indicating the URL's parameter string; if any parameters are provided, this string includes all of them, beginning with the leading ? character.
+   */
+  search: string;
+
+  /**
+   * A URLSearchParams object which can be used to access the individual query parameters found in search.
+   * (Read only)
+   */
+  readonly searchParams: URLSearchParams;
+
+  /**
+   * A USVString containing the username specified before the domain name.
+   */
+  username: string;
+}
+
+const attrs = [
+  "hash",
+  "host",
+  "hostname",
+  "href",
+  "password",
+  "pathname",
+  "port",
+  "protocol",
+  "search",
+  "username",
+] as const;
+
+/**
+ * Wrapper of `URL` class with additional formatting features.
+ *
+ * Every attribute is read-only. To modify an instance access to the underlying `url` attribute.
+ */
+export class BetterURL implements URLDocumented {
+  /**
+   * Exposed so you are able to modify the URL
+   */
   public readonly url: URL;
 
-  constructor(input: string, base?: string | URL) {
+  constructor(
+    input: string | URL,
+    base?: string | URL,
+    overwrite?: Partial<Pick<URLDocumented, typeof attrs[number]>>,
+  ) {
     if (!base && base !== "") {
-      this.url = new URL(input);
+      this.url = new URL(input as any);
     } else {
-      const url = new BetterURL(String(base));
-      const resolved = BetterURL.resolve(url.format({ protocol: true, hostname: true, pathname: true }), input);
+      const urlBase = new BetterURL(base);
+      const resolved = BetterURL.resolve(
+        urlBase.format({ protocol: true, hostname: true, pathname: true }),
+        String(input),
+      );
       this.url = new URL(resolved);
-      for (const [key, value] of url.searchParams) {
+      for (const [key, value] of urlBase.searchParams) {
         if (!this.url.searchParams.has(key)) {
           this.url.searchParams.set(key, value);
+        }
+      }
+      if (overwrite) {
+        for (const [key, value] of Object.entries(overwrite)) {
+          // @ts-expect-error Later add typings
+          if (attrs.indexOf(key) > -1) {
+            // @ts-expect-error Later add typings
+            this.url[key] = value;
+          }
         }
       }
     }
@@ -59,7 +161,7 @@ export class BetterURL implements URL {
     return this.url.toString();
   }
 
-  isEqual(url: URL) {
+  isEqual(url: URL): boolean {
     return url.href === this.href;
   }
 

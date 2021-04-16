@@ -32,4 +32,12 @@ describe("BetterURL", () => {
     const url = new BetterURL("/subpath?q=bye&title=title", "https://example.com/path?q=hello&desc=desc");
     expect(url.href).toEqual("https://example.com/path/subpath?q=bye&title=title&desc=desc");
   });
+
+  it("overrides with third parameter", () => {
+    const url = new BetterURL("/subpath?q=bye&title=title", "https://example.com/path?q=hello&desc=desc", {
+      hostname: "flayyer.io",
+      username: "user",
+    });
+    expect(url.href).toEqual("https://user@flayyer.io/path/subpath?q=bye&title=title&desc=desc");
+  });
 });
