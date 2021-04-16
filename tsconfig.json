@@ -6,6 +6,7 @@
     "declaration": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "sourceMap": true,
     "skipLibCheck": true,
     "alwaysStrict": true,
     "strict": true,
