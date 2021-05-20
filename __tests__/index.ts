@@ -24,6 +24,9 @@ describe("BetterURL", () => {
   it("formats URL", () => {
     const url = new BetterURL("/subpath", "https://example.com/path?q=hello");
     expect(url.format({ protocol: true, hostname: true, pathname: true })).toEqual("https://example.com/path/subpath");
+    expect(url.format({ protocol: true, hostname: true, port: true, pathname: true })).toEqual(
+      "https://example.com:443/path/subpath",
+    );
     expect(url.format({ hostname: true, pathname: true })).toEqual("example.com/path/subpath");
     expect(url.format({ hostname: true, pathname: true, search: true })).toEqual("example.com/path/subpath?q=hello");
   });

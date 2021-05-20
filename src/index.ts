@@ -87,6 +87,21 @@ export class BetterURL implements URLDocumented {
    */
   public readonly url: URL;
 
+  /**
+   * Create BetterURL instance but on error it returns `null`.
+   */
+  static create(
+    input: string | URL,
+    base?: string | URL,
+    overwrite?: Partial<Pick<URLDocumented, typeof attrs[number]>>,
+  ): BetterURL | null {
+    try {
+      return new BetterURL(input, base, overwrite);
+    } catch {
+      return null;
+    }
+  }
+
   constructor(
     input: string | URL,
     base?: string | URL,
@@ -172,15 +187,21 @@ export class BetterURL implements URLDocumented {
   format(opts?: {
     protocol?: boolean;
     hostname?: boolean;
+    port?: boolean;
     pathname?: boolean;
     search?: boolean;
     hash?: boolean;
   }): string {
     if (!opts) return this.href;
+    const protocol = this.protocol;
     let str = "";
     // TODO: add more
-    if (opts.protocol) str += this.protocol + "//";
+    if (opts.protocol) str += protocol + "//";
     if (opts.hostname) str += this.hostname;
+    if (opts.port) {
+      const port = this.port || (protocol === "https:" && 443) || (protocol === "http:" && 80);
+      if (port) str += ":" + port;
+    }
     if (opts.pathname) str += this.pathname;
     if (opts.search) str += this.search ?? "";
     if (opts.hash) str += this.hash;
