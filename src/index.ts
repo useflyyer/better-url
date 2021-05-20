@@ -107,6 +107,7 @@ export class BetterURL implements URLDocumented {
     base?: string | URL,
     overwrite?: Partial<Pick<URLDocumented, typeof attrs[number]>>,
   ) {
+    // TODO: handle case when input and base are both absolute URLs. The native class can handle it but the logic here must change.
     if (!base && base !== "") {
       this.url = new URL(input as any);
     } else {
@@ -184,6 +185,12 @@ export class BetterURL implements URLDocumented {
     return relativeURL ? baseURL.replace(/\/+$/, "") + "/" + relativeURL.replace(/^\/+/, "") : baseURL;
   }
 
+  static isInstance(input: any): input is URL {
+    if (input instanceof URL) return true;
+    if (input instanceof BetterURL) return true;
+    return false;
+  }
+
   format(opts?: {
     protocol?: boolean;
     hostname?: boolean;
@@ -206,5 +213,9 @@ export class BetterURL implements URLDocumented {
     if (opts.search) str += this.search ?? "";
     if (opts.hash) str += this.hash;
     return str;
+  }
+
+  concat(input: string | URL) {
+    return new BetterURL(input, this);
   }
 }

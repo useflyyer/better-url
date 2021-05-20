@@ -36,6 +36,17 @@ describe("BetterURL", () => {
     expect(url.href).toEqual("https://example.com/path/subpath?q=bye&title=title&desc=desc");
   });
 
+  it("concatenate URL", () => {
+    expect(new BetterURL("https://example.com/").concat("/path").href).toBe("https://example.com/path");
+    expect(new BetterURL("https://example.com/about").concat("/path").href).toBe("https://example.com/about/path");
+  });
+
+  it("test URL instance", () => {
+    expect(BetterURL.isInstance(new BetterURL("https://example.com/"))).toBe(true);
+    expect(BetterURL.isInstance(new URL("https://example.com/"))).toBe(true);
+    expect(BetterURL.isInstance("https://example.com/")).toBe(false);
+  });
+
   it("overrides with third parameter", () => {
     const url = new BetterURL("/subpath?q=bye&title=title", "https://example.com/path?q=hello&desc=desc", {
       hostname: "flayyer.io",
