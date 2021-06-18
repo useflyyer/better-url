@@ -76,6 +76,11 @@ const attrs = [
   "username",
 ] as const;
 
+export interface BetterURLOpts {
+  keepBaseSearch?: boolean;
+  defaultProtocol?: string;
+}
+
 /**
  * Wrapper of `URL` class with additional formatting features.
  *
@@ -94,9 +99,10 @@ export class BetterURL implements URLDocumented {
     input: string | URL | BetterURL,
     base?: string | URL | BetterURL,
     overwrite?: Partial<Pick<URLDocumented, typeof attrs[number]>>,
+    opts?: BetterURLOpts,
   ): BetterURL | null {
     try {
-      return new BetterURL(input, base, overwrite);
+      return new BetterURL(input, base, overwrite, opts);
     } catch {
       return null;
     }
@@ -106,7 +112,7 @@ export class BetterURL implements URLDocumented {
     input: string | URL | BetterURL,
     base?: string | URL | BetterURL,
     overwrite?: Partial<Pick<URLDocumented, typeof attrs[number]>>,
-    opts?: { keepBaseSearch?: boolean; defaultProtocol?: string },
+    opts?: BetterURLOpts,
   ) {
     input = String(input);
     /** Also supports protocol relative (eg: //flayyer.com/foo ) */
