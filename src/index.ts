@@ -79,7 +79,7 @@ const attrs = [
 /**
  * Wrapper of `URL` class with additional formatting features.
  *
- * Every attribute is read-only. To modify an instance access to the underlying `url` attribute.
+ * Every attribute is read-only. To modify an instance access to the underlying `url` attribute, but is not recommended.
  */
 export class BetterURL implements URLDocumented {
   /**
@@ -91,8 +91,8 @@ export class BetterURL implements URLDocumented {
    * Create BetterURL instance but on error it returns `null`.
    */
   static create(
-    input: string | URL,
-    base?: string | URL,
+    input: string | URL | BetterURL,
+    base?: string | URL | BetterURL,
     overwrite?: Partial<Pick<URLDocumented, typeof attrs[number]>>,
   ): BetterURL | null {
     try {
@@ -103,32 +103,44 @@ export class BetterURL implements URLDocumented {
   }
 
   constructor(
-    input: string | URL,
-    base?: string | URL,
+    input: string | URL | BetterURL,
+    base?: string | URL | BetterURL,
     overwrite?: Partial<Pick<URLDocumented, typeof attrs[number]>>,
+    opts?: { keepBaseSearch?: boolean; defaultProtocol?: string },
   ) {
-    // TODO: handle case when input and base are both absolute URLs. The native class can handle it but the logic here must change.
-    if (!base && base !== "") {
-      this.url = new URL(input as any);
+    input = String(input);
+    /** Also supports protocol relative (eg: //flayyer.com/foo ) */
+    const ABSOLUTE_REGEX = /^https?:\/\/|^\/\//i;
+    if (ABSOLUTE_REGEX.test(input)) {
+      if (input.startsWith("//")) {
+        const defaultProtocol = (opts && opts.defaultProtocol) || "https:";
+        input = defaultProtocol + input; // Force explicit protocol
+      }
+      // Ignore base
+      this.url = new URL(input);
     } else {
-      const urlBase = new BetterURL(base);
-      const resolved = BetterURL.resolve(
-        urlBase.format({ protocol: true, hostname: true, pathname: true }),
-        String(input),
-      );
-      this.url = new URL(resolved);
-      for (const [key, value] of urlBase.searchParams) {
-        if (!this.url.searchParams.has(key)) {
-          this.url.searchParams.set(key, value);
+      this.url = new URL(input, base);
+      if (base && base !== "") {
+        const urlBase = base instanceof BetterURL ? base : base instanceof URL ? base : new URL(base);
+        this.url.pathname = BetterURL.resolve(urlBase.pathname, this.url.pathname);
+
+        // // Keep base queryparams
+        if (opts && opts.keepBaseSearch) {
+          for (const [key, value] of urlBase.searchParams) {
+            if (!this.url.searchParams.has(key)) {
+              this.url.searchParams.set(key, value);
+            }
+          }
         }
       }
-      if (overwrite) {
-        for (const [key, value] of Object.entries(overwrite)) {
+    }
+
+    if (overwrite) {
+      for (const [key, value] of Object.entries(overwrite)) {
+        // @ts-expect-error Later add typings
+        if (attrs.indexOf(key) > -1) {
           // @ts-expect-error Later add typings
-          if (attrs.indexOf(key) > -1) {
-            // @ts-expect-error Later add typings
-            this.url[key] = value;
-          }
+          this.url[key] = value;
         }
       }
     }
@@ -171,6 +183,7 @@ export class BetterURL implements URLDocumented {
     return this.url.username;
   }
   toJSON(): string {
+    // TODO: Should formats to parts? But is not going to be compliant with the URL class.
     return this.url.toJSON();
   }
   toString(): string {
@@ -185,9 +198,22 @@ export class BetterURL implements URLDocumented {
     return relativeURL ? baseURL.replace(/\/+$/, "") + "/" + relativeURL.replace(/^\/+/, "") : baseURL;
   }
 
-  static isInstance(input: any): input is URL {
+  /** Check if URL instance */
+  static isURL(input: any): input is URL {
     if (input instanceof URL) return true;
+    return false;
+  }
+  /** Check if URL instance */
+  static isBetterURL(input: any): input is URL {
     if (input instanceof BetterURL) return true;
+    return false;
+  }
+
+  /**
+   * @deprecated Use `isURL` or `isBetterURL`.
+   */
+  static isInstance(input: any): input is URL {
+    if (BetterURL.isURL(input) || BetterURL.isBetterURL(input)) return true;
     return false;
   }
 
@@ -215,7 +241,7 @@ export class BetterURL implements URLDocumented {
     return str;
   }
 
-  concat(input: string | URL) {
+  concat(input: string | URL): BetterURL {
     return new BetterURL(input, this);
   }
 }
