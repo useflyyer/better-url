@@ -1,7 +1,7 @@
 {
   "name": "@flayyer/better-url",
   "description": "Wrapper of `URL` class with additional formatting features.",
-  "version": "0.3.5",
+  "version": "1.0.0",
   "author": "Patricio López Juri",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
