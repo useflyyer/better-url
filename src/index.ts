@@ -95,7 +95,7 @@ export class BetterURL implements URLDocumented {
   /**
    * Create BetterURL instance but on error it returns `null`.
    */
-  static create(
+   public static create(
     input: string | URL | BetterURL,
     base?: string | URL | BetterURL,
     overwrite?: Partial<Pick<URLDocumented, typeof attrs[number]>>,
@@ -115,7 +115,7 @@ export class BetterURL implements URLDocumented {
     opts?: BetterURLOpts,
   ) {
     input = String(input);
-    /** Also supports protocol relative (eg: //flayyer.com/foo ) */
+    /** Also supports protocol relative (eg: //flyyer.io/foo ) */
     const ABSOLUTE_REGEX = /^https?:\/\/|^\/\//i;
     if (ABSOLUTE_REGEX.test(input)) {
       if (input.startsWith("//")) {
@@ -152,65 +152,65 @@ export class BetterURL implements URLDocumented {
     }
   }
 
-  get hash() {
+  public get hash() {
     return this.url.hash;
   }
-  get host() {
+  public get host() {
     return this.url.host;
   }
-  get hostname() {
+  public get hostname() {
     return this.url.hostname;
   }
-  get href() {
+  public get href() {
     return this.url.href;
   }
-  get origin() {
+  public get origin() {
     return this.url.origin;
   }
-  get password() {
+  public get password() {
     return this.url.password;
   }
-  get pathname() {
+  public get pathname() {
     return this.url.pathname;
   }
-  get port() {
+  public get port() {
     return this.url.port;
   }
-  get protocol() {
+  public get protocol() {
     return this.url.protocol;
   }
-  get search() {
+  public get search() {
     return this.url.search;
   }
-  get searchParams() {
+  public get searchParams() {
     return this.url.searchParams;
   }
-  get username() {
+  public get username() {
     return this.url.username;
   }
-  toJSON(): string {
+  public toJSON(): string {
     // TODO: Should formats to parts? But is not going to be compliant with the URL class.
     return this.url.toJSON();
   }
-  toString(): string {
+  public toString(): string {
     return this.url.toString();
   }
 
-  isEqual(url: URL): boolean {
+  public isEqual(url: URL): boolean {
     return url.href === this.href;
   }
 
-  static resolve(baseURL: string, relativeURL?: string | null) {
+  public static resolve(baseURL: string, relativeURL?: string | null) {
     return relativeURL ? baseURL.replace(/\/+$/, "") + "/" + relativeURL.replace(/^\/+/, "") : baseURL;
   }
 
   /** Check if URL instance */
-  static isURL(input: any): input is URL {
+  public static isURL(input: any): input is URL {
     if (input instanceof URL) return true;
     return false;
   }
   /** Check if URL instance */
-  static isBetterURL(input: any): input is URL {
+  public static isBetterURL(input: any): input is URL {
     if (input instanceof BetterURL) return true;
     return false;
   }
@@ -218,12 +218,12 @@ export class BetterURL implements URLDocumented {
   /**
    * @deprecated Use `isURL` or `isBetterURL`.
    */
-  static isInstance(input: any): input is URL {
+   public static isInstance(input: any): input is URL {
     if (BetterURL.isURL(input) || BetterURL.isBetterURL(input)) return true;
     return false;
   }
 
-  format(opts?: {
+  public format(opts?: {
     protocol?: boolean;
     hostname?: boolean;
     port?: boolean;
@@ -247,7 +247,7 @@ export class BetterURL implements URLDocumented {
     return str;
   }
 
-  concat(input: string | URL): BetterURL {
+  public concat(input: string | URL): BetterURL {
     return new BetterURL(input, this);
   }
 }

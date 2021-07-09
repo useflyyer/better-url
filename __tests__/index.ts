@@ -22,8 +22,8 @@ describe("BetterURL", () => {
   });
 
   it("creates URL and omits base if present on first argument", () => {
-    const url = new BetterURL("https://flayyer.com/subpath", "https://example.com/path?q=hello");
-    expect(url.href).toEqual("https://flayyer.com/subpath");
+    const url = new BetterURL("https://flyyer.io/subpath", "https://example.com/path?q=hello");
+    expect(url.href).toEqual("https://flyyer.io/subpath");
   });
 
   it("formats URL", () => {
@@ -54,9 +54,9 @@ describe("BetterURL", () => {
 
   it("overrides with third parameter", () => {
     const url = new BetterURL("/subpath?q=bye&title=title", "https://example.com/path?q=hello&desc=desc", {
-      hostname: "flayyer.io",
+      hostname: "flyyer.io",
       username: "user",
     });
-    expect(url.href).toEqual("https://user@flayyer.io/path/subpath?q=bye&title=title");
+    expect(url.href).toEqual("https://user@flyyer.io/path/subpath?q=bye&title=title");
   });
 });

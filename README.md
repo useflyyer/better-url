@@ -1,4 +1,4 @@
-# @flayyer/better-url
+# @flyyer/better-url
 
 > This is not efficient but is practical for our needs.
 
@@ -7,7 +7,7 @@ Wrapper of `URL` class with additional formatting features but it is not a drop-
 **Implements the `URL` class definition but preserves `base`'s path and optionally queryparams when resolving URLs.**
 
 ```sh
-yarn add @flayyer/better-url
+yarn add @flyyer/better-url
 ```
 
 We recommend using it in conjunction with https://github.com/sindresorhus/normalize-url
@@ -15,7 +15,7 @@ We recommend using it in conjunction with https://github.com/sindresorhus/normal
 ## Usage
 
 ```ts
-import { BetterURL } from "@flayyer/better-url";
+import { BetterURL } from "@flyyer/better-url";
 
 const url = new BetterURL("/subpath?q=bye&title=title", "https://example.com/path?q=hello&desc=desc", undefined, { keepBaseSearch: true });
 console.log(url.format({ protocol: true, hostname: true, pathname: true, search: true }));
