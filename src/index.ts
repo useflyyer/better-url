@@ -95,7 +95,7 @@ export class BetterURL implements URLDocumented {
   /**
    * Create BetterURL instance but on error it returns `null`.
    */
-   public static create(
+  public static create(
     input: string | URL | BetterURL,
     base?: string | URL | BetterURL,
     overwrite?: Partial<Pick<URLDocumented, typeof attrs[number]>>,
@@ -218,7 +218,7 @@ export class BetterURL implements URLDocumented {
   /**
    * @deprecated Use `isURL` or `isBetterURL`.
    */
-   public static isInstance(input: any): input is URL {
+  public static isInstance(input: any): input is URL {
     if (BetterURL.isURL(input) || BetterURL.isBetterURL(input)) return true;
     return false;
   }
