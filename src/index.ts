@@ -132,11 +132,11 @@ export class BetterURL implements URLDocumented {
 
         // // Keep base queryparams
         if (opts && opts.keepBaseSearch) {
-          for (const [key, value] of urlBase.searchParams) {
+          urlBase.searchParams.forEach((value, key) => {
             if (!this.url.searchParams.has(key)) {
               this.url.searchParams.set(key, value);
             }
-          }
+          });
         }
       }
     }
@@ -247,6 +247,9 @@ export class BetterURL implements URLDocumented {
     return str;
   }
 
+  /**
+   * Returns a new instance
+   */
   public concat(input: string | URL): BetterURL {
     return new BetterURL(input, this);
   }
